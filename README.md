@@ -9,9 +9,13 @@
 * Docker
 
 ##### Starting a RabbitMQ container
- In the terminal execute:
-  $ `docker run -d -p 5672:5672 -p 15671:15672 --name rabbitmq rabbitmq `
+* It is good practice when running services in containers, Use an isolated docker network in order to be able to reference it using DNS.
+ 
+  `docker network create nameko_net`
 
+ In the terminal execute:
+ 
+  $ ` docker run -d --network nameko_net --hostname rabbitmqhost --name rabbitmq -p 15672:15672 -p 5672:5672 rabbitmq:3-management`
 ##### Initial Setup
 While from the root directory.
 To generate nameko dependencies file:
@@ -26,6 +30,6 @@ To install the required packages for our development environment:
 
 $ `pip install -r requirements/base.txt -r requirements/test.txt `
 
-###worklow
+### worklow
 
 Used [gitflow](https://nvie.com/posts/a-successful-git-branching-model/) for versioning.
