@@ -15,6 +15,7 @@ class RedisClient:
             raise RedisError(
                 'Message not found:{}'.format(message_id)
             )
+        return message
 
 
 class RedisError(Exception):
