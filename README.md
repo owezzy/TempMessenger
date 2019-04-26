@@ -16,6 +16,17 @@
  In the terminal execute:
  
   $ ` docker run -d --network nameko_net --hostname rabbitmqhost --name rabbitmq -p 15672:15672 -p 5672:5672 rabbitmq:3-management`
+
+##### Starting a Redis Container
+* Redis is an in-memory data store
+* Execute this in terminal: 
+
+  $ ` docker run -d --network nameko_net --hostname redishost -p 6379:6379 --name redis redis`
+* Port 6379 is exposed on the container to facilitate communicate between Nameko and Redis container
+##### Installing Python Redis Client
+* This allows interaction with Python 
+* Add redis in the `base.in` file, and recomplie using `pip-compile requirements/base.in` to generate it to new `base.txt`.
+
 ##### Initial Setup
 While from the root directory.
 To generate nameko dependencies file:
