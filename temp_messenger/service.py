@@ -1,20 +1,12 @@
-from nameko.rpc import rpc, RpcProxy
-from nameko.web.handlers import http
+from nameko.rpc import rpc
+from .dependencies.redis import MessageStore
 
 
-class KonnichiwaService:
+class MessageService:
 
-    name = 'konnichiwa_service'
+    name = 'message_service'
+    message_store = MessageStore()
 
     @rpc
-    def konnichiwa(self):
-        return 'Konnichiwa!'
-
-
-class WebServer:
-    name = 'web_server'
-    konnichiwa_service = RpcProxy('konnichiwa_service')
-
-    @http('GET', '/')
-    def home(self, request):
-        return self.konnichiwa_service.konnichiwa()
+    def get_message(self, message_id):
+        return self.message_store.get_message(message_id)
