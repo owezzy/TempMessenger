@@ -12,13 +12,16 @@ eventlet==0.24.1          # via nameko
 greenlet==0.4.15          # via eventlet
 idna==2.8                 # via requests
 importlib-metadata==0.9   # via path.py
+jinja2==2.10.1
 kombu==4.5.0              # via nameko
+markupsafe==1.1.1         # via jinja2
 mock==2.0.0               # via nameko
 monotonic==1.5            # via eventlet
 nameko==2.12.0
 path.py==12.0.1           # via nameko
 pbr==5.1.3                # via mock
 pyyaml==5.1               # via nameko
+redis==3.2.1
 requests==2.21.0          # via nameko
 six==1.12.0               # via eventlet, mock, nameko
 urllib3==1.24.2           # via requests
