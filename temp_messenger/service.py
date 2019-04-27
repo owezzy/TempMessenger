@@ -55,6 +55,11 @@ class WebServer:
         html_response = create_html_response(rendered_template)
         return html_response
 
+    @http('GET', '/messages')
+    def get_messages(self, request):
+        messages = self.message_service.get_all_messages()
+        return create_json_response(messages)
+
     @http('POST', '/messages')
     def post_message(self, request):
         data_as_text = request.get_data(as_text=True)
@@ -71,3 +76,9 @@ class WebServer:
 
         self.message_service.save_message(message)
         return 204, ''
+
+
+def create_json_response(content):
+    headers = {'Content-Type': 'application/json'}
+    json_data = json.dumps(content)
+    return Response(json_data, status=200, headers=headers)
