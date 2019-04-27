@@ -34,7 +34,7 @@ class WebServer:
 
     name = 'web_server'
     message_service = RpcProxy('message_service')
-    jinja = Jinja2
+    jinja = Jinja2()
 
     @http('GET', '/')
     def home(self, request):

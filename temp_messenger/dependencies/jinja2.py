@@ -24,5 +24,5 @@ class TemplateRenderer:
         )
 
     def render_home(self, messages):
-        template = self.template_env.get_template('homes.html')
+        template = self.template_env.get_template('home.html')
         return template.render(messages=messages)
