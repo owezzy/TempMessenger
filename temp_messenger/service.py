@@ -1,7 +1,9 @@
+import json
+from operator import itemgetter
+
 from nameko.rpc import rpc, RpcProxy
 from nameko.web.handlers import http
 from werkzeug.wrappers import Response
-import json
 
 from .dependencies.redis import MessageStore
 from .dependencies.jinja2 import Jinja2
@@ -10,6 +12,14 @@ from .dependencies.jinja2 import Jinja2
 def create_html_response(content):
     headers = {'Content-Type': 'text/html'}
     return Response(content, status=200, headers=headers)
+
+
+def sort_messages_by_expiry(messages, reverse=False):
+    return sorted(
+        messages,
+        key=itemgetter('expires_in'),
+        reverse=reverse
+    )
 
 
 class MessageService:
@@ -28,7 +38,8 @@ class MessageService:
     @rpc
     def get_all_messages(self):
         messages = self.message_store.get_all_messages()
-        return messages
+        sorted_messages = sort_messages_by_expiry(messages)
+        return sorted_messages
 
 
 class WebServer:
