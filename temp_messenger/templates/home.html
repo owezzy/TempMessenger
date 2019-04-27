@@ -5,13 +5,8 @@
 <body>
   <h1>TempMessenger</h1>
 
-{% if messages %}
-    {% for message in messages %}
-        <p>{{message['message'] }}</p>
-    {% endfor %}
-{% else %}
-    <p>No messages!</p>
-{% endif %}
+<div id="messageContainer"></div>
+
 <form action="/messages" id="postMessage">
     <input type="text" name="message" placeholder="Post Message">
     <input type="submit" value="Post">
@@ -34,5 +29,18 @@
             success: function () {location.reload();}
         })
     })
+
+    function messagePoll() {
+        $.ajax({
+            type: 'GET',
+            url: '/messages',
+            dataType: "json"
+            success: function (data) {
+                updateMessages(data);
+            },
+            timeout: 500,
+            complete: setTimeout(messagePoll, 1000)
+        })
+    }
 </script>
 </body>
