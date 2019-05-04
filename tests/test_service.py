@@ -100,3 +100,19 @@ def test_raises_error_if_message_does_not_exist(
             get_message('message-x')
 
     err.match(r'Message not found: message-x')
+
+
+def test_saves_new_message(message_svc, fake_strict_redis, uuid4):
+    uuid4.return_value.hex = 'abcdef123456'
+
+    with entrypoint_hook(message_svc, 'save_message') as save_message:
+        message_id = save_message('Test message here!')
+
+    assert message_id == 'abcdef123456'
+    # Writing point:
+    # When first running this, it will fail since the message is
+    # in bytes. fake_strict_redis is not set up to
+    # decode_responses. decode() is needed
+    message = fake_strict_redis().get('abcdef123456').decode()
+    assert message == 'Test message here!'
+
