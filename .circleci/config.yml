@@ -2,7 +2,9 @@
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.2
 jobs:
   build:
     docker:
@@ -15,7 +17,7 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       - image: circleci/redis:3.2
 
-      - image: docker/rabbitmq:3-management
+      - image: circleci/rabbitmq:3-management
         environment:
           RABBITMQ_DEFAULT_USER: "rabbitmq"
           RABBITMQ_DEFAULT_PASS: "rabbitmq"
@@ -59,8 +61,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest
+            pytest --cov-report=--cov=temp_messenger
 
-      - store_artifacts:
-          path: coverage
-          destination: covarage
+      - codecov/upload:
+          file: {{~ .covarage}}
