@@ -1,23 +1,62 @@
-from nameko.testing.services import worker_factory
+from mock import patch
+from time import sleep
 
-from temp_messenger.service import KonnichiwaService
-from temp_messenger.service import WebServer
+import pytest
+
+from fakeredis import FakeStrictRedis
+from nameko.containers import ServiceContainer
+from nameko.testing.services import entrypoint_hook
+
+from temp_messenger.service import (
+    MessageService,
+    WebServer,
+    sort_messages_by_expiry
+)
 
 
-def test_konnichiwa():
-    service = worker_factory(KonnichiwaService)
-    result = service.konnichiwa()
-    assert result == 'Konnichiwa!'
+@pytest.fixture
+def fake_strict_redis():
+    with patch(
+            'temp_messenger.dependencies.redis.StrictRedis', FakeStrictRedis
+    ) as fake_strict_redis:
+        yield fake_strict_redis
+        fake_strict_redis().flushall()
 
 
-def test_root_http(web_session, web_config, container_factory):
-    web_config['AMQP_URI'] = 'amqp://guest:guest@localhost'
+@pytest.fixture
+def config(web_config):
+    return dict(
+        AMQP_URI='pyamqp://guest:guest@localhost',
+        REDIS_URL='redis://localhost:6379/0',
+        **web_config
+    )
 
-    web_server = container_factory(WebServer, web_config)
-    konnichiwa = container_factory(KonnichiwaService, web_config)
+
+@pytest.fixture
+def uuid4():
+    with patch('temp_messenger.dependencies.redis.uui4') as uuid4:
+        yield uuid4
+
+
+@pytest.fixture
+def message_svc(config, fake_strict_redis):
+    message_svc = ServiceContainer(MessageService, config)
+    message_svc.start()
+
+    return message_svc
+
+
+@pytest.fixture
+def web_server(config, fake_strict_redis):
+    web_server = ServiceContainer(WebServer, config)
     web_server.start()
-    konnichiwa.start()
 
-    result = web_session.get('/')
+    return web_server
 
-    assert result.text == 'Konnichiwa!'
+
+@pytest.fixture
+def message_lifetime():
+    with patch(
+            'temp_messenger.dependencies.redis.MESSAGE_LIFETIME', 100
+    ) as lifetime:
+        yield lifetime
