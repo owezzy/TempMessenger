@@ -33,14 +33,30 @@ To generate nameko dependencies file:
 
  $ `pip-compile requirements/base.in`
 
-To generate pytest dependencies file:
+* To generate teststing dependencies file:
 
  $ `pip-compile requirements/test.in `
 
-To install the required packages for our development environment:
+* To install the required packages for our development environment:
 
 $ `pip install -r requirements/base.txt -r requirements/test.txt `
 
-### worklow
+* To run the application:
+$ `nameko run temp_messenger.service --config config.yaml`
 
-Used [gitflow](https://nvie.com/posts/a-successful-git-branching-model/) for versioning.
+### Tests
+Tests are written using pytest
+* Run `pytest` to run the tests from the terminal.
+
+* To generate a report:
+ $ `pytest --cov=temp_messenger`
+ 
+ 
+
+### workflow
+
+* Used [gitflow](https://nvie.com/posts/a-successful-git-branching-model/) for versioning.
+
+* [CircleCI](https://circleci.com/) Continous Intergration tool.
+
+* [Codecov](https://codecov.io/) Code Review Tool.
