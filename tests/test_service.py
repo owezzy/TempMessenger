@@ -81,3 +81,22 @@ def test_homepage_no_messages(
     assert 200 == result.status_code
     assert '<!DOCTYPE html>' in result.text
     assert 'No messages!' in result.text
+
+
+def test_gets_message(message_svc, fake_strict_redis):
+    fake_strict_redis().set('message-1', 'Test message here!')
+
+    with entrypoint_hook(message_svc, 'get_message') as get_message:
+        message = get_message('message-1')
+
+    assert message == 'Test message here!'
+
+
+def test_raises_error_if_message_does_not_exist(
+    message_svc, fake_strict_redis
+):
+    with entrypoint_hook(message_svc, 'get_message') as get_message:
+        with pytest.raises(RedisError) as err:
+            get_message('message-x')
+
+    err.match(r'Message not found: message-x')
