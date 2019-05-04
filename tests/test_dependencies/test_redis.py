@@ -24,7 +24,7 @@ def test_set_up_redis_dependency(mock_strict_redis, message_store):
     message_store.setup()
 
     assert mock_strict_redis.from_url.call_args_list == [
-        call('redis://redis/0', decode_responses=True, charset='utf-8')
+        call('redis://redis/0', charset='utf-8')
     ]
 
 

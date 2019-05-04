@@ -35,7 +35,7 @@ def config(web_config):
 
 @pytest.fixture
 def uuid4():
-    with patch('temp_messenger.dependencies.redis.uui4') as uuid4:
+    with patch('temp_messenger.dependencies.redis.uuid4') as uuid4:
         yield uuid4
 
 
@@ -58,7 +58,7 @@ def web_server(config, fake_strict_redis):
 @pytest.fixture
 def message_lifetime():
     with patch(
-            'temp_messenger.dependencies.redis.MESSAGE_LIFETIME', 100
+        'temp_messenger.dependencies.redis.MESSAGE_LIFETIME', 100
     ) as lifetime:
         yield lifetime
 
@@ -167,7 +167,7 @@ def test_save_message_expiry(
     assert message is None
 
 
-def test_sort_message_by_expiry():
+def test_sort_messages_by_expiry():
     messages = [
         {'message': 'So do I!', 'expires_in': 4},
         {'message': 'Hello', 'expires_in': 1},
@@ -185,7 +185,7 @@ def test_sort_message_by_expiry():
     ]
 
 
-def test_sort_message_by_expiry_reversed():
+def test_sort_messages_by_expiry_reversed():
     messages = [
         {'message': 'So do I!', 'expires_in': 4},
         {'message': 'Hello', 'expires_in': 1},
