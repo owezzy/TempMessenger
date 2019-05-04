@@ -7,6 +7,7 @@ from fakeredis import FakeStrictRedis
 from nameko.containers import ServiceContainer
 from nameko.testing.services import entrypoint_hook
 
+from temp_messenger.dependencies.redis import RedisError
 from temp_messenger.service import (
     MessageService,
     WebServer,
@@ -60,3 +61,23 @@ def message_lifetime():
             'temp_messenger.dependencies.redis.MESSAGE_LIFETIME', 100
     ) as lifetime:
         yield lifetime
+
+
+def test_homepage(
+    web_server, message_svc, web_session, fake_strict_redis
+):
+    result = web_session.get('/')
+
+    assert 200 == result.status_code
+    assert '<!DOCTYPE html>' in result.text
+    assert 'TempMessenger' in result.text
+
+
+def test_homepage_no_messages(
+    web_server, message_svc, web_session, fake_strict_redis
+):
+    result = web_session.get('/')
+
+    assert 200 == result.status_code
+    assert '<!DOCTYPE html>' in result.text
+    assert 'No messages!' in result.text
