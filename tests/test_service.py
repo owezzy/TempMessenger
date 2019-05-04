@@ -134,3 +134,15 @@ def test_gets_all_messages(message_svc, fake_strict_redis):
         {'id': 'xyz789', 'message': 'I Love Python', 'expires_in': -1},
         {'id': 'aaaabbbb', 'message': 'So do I!', 'expires_in': -1},
     ]
+
+
+def test_returns_empty_list_if_no_messages(message_svc):
+    # Writing point:
+    # This test will fail at first since redis is not cleared
+    # after each test. Explain the tear down
+    with entrypoint_hook(
+        message_svc, 'get_all_messages'
+    ) as get_all_messages:
+        messages = get_all_messages()
+
+    assert messages == []
