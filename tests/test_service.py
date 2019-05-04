@@ -146,3 +146,22 @@ def test_returns_empty_list_if_no_messages(message_svc):
         messages = get_all_messages()
 
     assert messages == []
+
+
+def test_save_message_expiry(
+    message_svc, fake_strict_redis, uuid4, message_lifetime
+):
+    uuid4.return_value.hex = 'abcdef123456'
+
+    with entrypoint_hook(
+        message_svc, 'save_message'
+    ) as save_message:
+        save_message('Test message here!')
+
+    message = fake_strict_redis().get('abcdef123456').decode()
+    assert message == 'Test message here!'
+
+    sleep(0.1)
+
+    message = fake_strict_redis().get('abcdef123456')
+    assert message is None
