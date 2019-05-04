@@ -165,3 +165,50 @@ def test_save_message_expiry(
 
     message = fake_strict_redis().get('abcdef123456')
     assert message is None
+
+
+def test_sort_message_by_expiry():
+    messages = [
+        {'message': 'So do I!', 'expires_in': 4},
+        {'message': 'Hello', 'expires_in': 1},
+        {'message': 'I Love Python', 'expires_in': 3},
+        {'message': 'Howdy', 'expires_in': 2},
+    ]
+
+    sorted_messages = sort_messages_by_expiry(messages)
+
+    assert sorted_messages == [
+        {'message': 'Hello', 'expires_in': 1},
+        {'message': 'Howdy', 'expires_in': 2},
+        {'message': 'I Love Python', 'expires_in': 3},
+        {'message': 'So do I!', 'expires_in': 4},
+    ]
+
+
+def test_sort_message_by_expiry_reversed():
+    messages = [
+        {'message': 'So do I!', 'expires_in': 4},
+        {'message': 'Hello', 'expires_in': 1},
+        {'message': 'I Love Python', 'expires_in': 3},
+        {'message': 'Howdy', 'expires_in': 2},
+    ]
+
+    sorted_messages = sort_messages_by_expiry(
+        messages, reverse=True
+    )
+
+    assert sorted_messages == [
+        {'message': 'So do I!', 'expires_in': 4},
+        {'message': 'I Love Python', 'expires_in': 3},
+        {'message': 'Howdy', 'expires_in': 2},
+        {'message': 'Hello', 'expires_in': 1},
+    ]
+
+
+def test_get_messages_endpoint_no_messages(
+    web_server, message_svc, web_session, fake_strict_redis
+):
+    result = web_session.get('/messages')
+
+    assert 200 == result.status_code
+    assert result.json() == []
