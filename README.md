@@ -1,4 +1,5 @@
 ## TempMessenger
+> [![CircleCI](https://circleci.com/gh/owezzy/TempMessenger/tree/develop.svg?style=svg)](https://circleci.com/gh/owezzy/TempMessenger/tree/develop)
 ### Goals
 * A user can go to a website and messages.
 * A user can see messages that others have sent.
