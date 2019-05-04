@@ -1,1 +1,4 @@
 pytest
+fakeredis
+codecov
+pytest-cov
